@@ -45,6 +45,18 @@
 - Após buildar o projeto, a documentação dos endpoints pode ser acessada no seguinte endereço: http://localhost:8080/swagger-ui/index.html#/
   <br>
   <br>
+- Os endpoints estão autenticados com JWT. Para gerar o token, execute o seguinte curl:
+  <br>
+  <br>
+  curl --location 'http://localhost:8080/login' \
+  --header 'Content-Type: application/json' \
+  --header 'Cookie: JSESSIONID=2653BE3DCEE7DD796108DD99E847CC66' \
+  --data '{
+  "username": "mauricio",
+  "password": "12345678"
+  }'
+  <br>
+  <br>
 - A aplicação cria e armazenas as informações no banco de dados incorporado H2.
   <br>
   <br>
