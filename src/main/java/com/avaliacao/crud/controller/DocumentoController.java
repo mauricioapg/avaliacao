@@ -4,6 +4,8 @@ import com.avaliacao.crud.dto.DocumentoRequestDTO;
 import com.avaliacao.crud.model.Documento;
 import com.avaliacao.crud.service.DocumentoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,20 +30,38 @@ public class DocumentoController {
     }
 
     @PostMapping
-    public Documento addDocumento(@RequestBody DocumentoRequestDTO documentoRequestDTO) {
+    public ResponseEntity<?> addDocumento(@RequestBody DocumentoRequestDTO documentoRequestDTO) {
         System.out.println("Iniciando inclusão de novo documento");
-        return documentoService.addDocumento(documentoRequestDTO);
+
+        try {
+            documentoService.addDocumento(documentoRequestDTO);
+            return ResponseEntity.ok("Documento cadastrado com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @PutMapping("{id}")
-    public Documento editDocumento(@PathVariable Long id, @RequestBody DocumentoRequestDTO documentoRequestDTO){
-        System.out.println("Iniciando atualização do documento id: " + id);
-        return documentoService.editDocumento(id, documentoRequestDTO);
+    public ResponseEntity<?> editDocumento(@PathVariable Long id, @RequestBody DocumentoRequestDTO documentoRequestDTO){
+        System.out.println("Iniciando alteração do documento id: " + id);
+
+        try {
+            documentoService.editDocumento(id, documentoRequestDTO);
+            return ResponseEntity.ok("Documento alterado com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @DeleteMapping("{id}")
-    public void deleteDocumento(@PathVariable Long id){
+    public ResponseEntity<?> deleteDocumento(@PathVariable Long id){
         System.out.println("Iniciando remoção do documento id: " + id);
-        documentoService.deleteDocumento(id);
+
+        try {
+            documentoService.deleteDocumento(id);
+            return ResponseEntity.ok("Documento removido com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

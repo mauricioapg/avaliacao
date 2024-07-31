@@ -37,27 +37,42 @@ public class BeneficiarioService {
         return beneficiarioRepository.save(beneficiario);
     }
 
-    public Beneficiario editBeneficiario(Long id, BeneficiarioRequestDTO beneficiarioRequestDTO){
+    public void editBeneficiario(Long id, BeneficiarioRequestDTO beneficiarioRequestDTO) throws Exception {
 
         Optional<Beneficiario> beneficiario = beneficiarioRepository.findById(id);
+
+        if(!beneficiario.isPresent()){
+            throw new Exception("Nenhum beneficiário encontrado com esse id");
+        }
 
         beneficiario.get().setNome(beneficiarioRequestDTO.getNome());
         beneficiario.get().setTelefone(beneficiarioRequestDTO.getTelefone());
         beneficiario.get().setDataNascimento(LocalDate.parse(beneficiarioRequestDTO.getDataNascimento()));
         beneficiario.get().setDataAtualizacao(LocalDateTime.now());
 
-        return beneficiarioRepository.save(beneficiario.get());
+        beneficiarioRepository.save(beneficiario.get());
     }
 
-    public void deleteBeneficiario(Long id){
+    public void deleteBeneficiario(Long id) throws Exception {
 
         List<Documento> documentosByIdBeneficiario = documentoService.findByIdBeneficiario(id);
 
         if(!documentosByIdBeneficiario.isEmpty()){
-            documentosByIdBeneficiario.forEach( d -> documentoService.deleteDocumento(d.getId()));
+            documentosByIdBeneficiario.forEach( d -> {
+                try {
+                    documentoService.deleteDocumento(d.getId());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
 
         Optional<Beneficiario> beneficiario = beneficiarioRepository.findById(id);
+
+        if(!beneficiario.isPresent()){
+            throw new Exception("Nenhum beneficiário encontrado com esse id");
+        }
+
         beneficiarioRepository.delete(beneficiario.get());
     }
 

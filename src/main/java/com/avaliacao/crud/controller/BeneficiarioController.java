@@ -4,6 +4,8 @@ import com.avaliacao.crud.dto.BeneficiarioRequestDTO;
 import com.avaliacao.crud.model.Beneficiario;
 import com.avaliacao.crud.service.BeneficiarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,14 +30,26 @@ public class BeneficiarioController {
     }
 
     @PutMapping("{id}")
-    public Beneficiario editBeneficiario(@PathVariable Long id, @RequestBody BeneficiarioRequestDTO beneficiarioRequestDTO){
-        System.out.println("Iniciando atualização do beneficiário id: " + id);
-        return beneficiarioService.editBeneficiario(id, beneficiarioRequestDTO);
+    public ResponseEntity<?> editBeneficiario(@PathVariable Long id, @RequestBody BeneficiarioRequestDTO beneficiarioRequestDTO){
+        System.out.println("Iniciando alteração do beneficiário id: " + id);
+
+        try {
+            beneficiarioService.editBeneficiario(id, beneficiarioRequestDTO);
+            return ResponseEntity.ok("Beneficiário alterado com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @DeleteMapping("{id}")
-    public void deleteBeneficiario(@PathVariable Long id){
+    public ResponseEntity<?> deleteBeneficiario(@PathVariable Long id){
         System.out.println("Iniciando remoção do beneficiário id: " + id);
-        beneficiarioService.deleteBeneficiario(id);
+
+        try {
+            beneficiarioService.deleteBeneficiario(id);
+            return ResponseEntity.ok("Beneficiário removido com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }
